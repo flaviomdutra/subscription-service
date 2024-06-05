@@ -19,6 +19,7 @@
 ## Workflows
 
 ### Detalhes da criação de um usuário com vínculo no Keycloak
+
 ```mermaid
 flowchart TD
     A[Sign up] -->|input data| B(SignUp mediator)
@@ -27,6 +28,7 @@ flowchart TD
 ```
 
 ### Ciclo de vida de uma Subscription
+
 ```mermaid
 flowchart TD
     A[Create Subscription] --> B(Trial)
@@ -37,12 +39,12 @@ flowchart TD
     E --> |Retry charging| B
 ```
 
-
 ## Kafka Connect
 
 ### Debezium
 
 Creating the debezium mysql user:
+
 ```sql
 CREATE USER IF NOT EXISTS 'debezium'@'%' IDENTIFIED WITH mysql_native_password BY 'debezium';
 GRANT SELECT, RELOAD, SHOW DATABASES, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'debezium'@'%';
@@ -50,6 +52,7 @@ FLUSH PRIVILEGES;
 ```
 
 Creating the kafka connect connector for the Debezium:
+
 ```shell
 curl --location --request PUT 'http://localhost:8083/connectors/admin-mysql-cdc/config' \
 --header 'Content-Type: application/json' \
@@ -132,6 +135,7 @@ Quando isso acontecer o flyway ficará em um estado de reparação
 com um registro na tabela `flyway_schema_history` com erro (`sucesso = 0`).
 
 Para executar a reparação, corrija os arquivos e execute:
+
 ```shell
 ./gradlew flywayRepair
 ```
