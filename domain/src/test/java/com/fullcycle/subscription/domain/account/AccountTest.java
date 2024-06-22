@@ -1,7 +1,12 @@
 package com.fullcycle.subscription.domain.account;
 
 import com.fullcycle.subscription.domain.UnitTest;
+import com.fullcycle.subscription.domain.account.iam.UserId;
 import com.fullcycle.subscription.domain.exceptions.DomainException;
+import com.fullcycle.subscription.domain.person.Address;
+import com.fullcycle.subscription.domain.person.Document;
+import com.fullcycle.subscription.domain.person.Email;
+import com.fullcycle.subscription.domain.person.Name;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -80,7 +85,7 @@ public class AccountTest extends UnitTest {
         );
 
         // then
-        Assertions.assertEquals(expectedMessage, actualError.message());
+        Assertions.assertEquals(expectedMessage, actualError.getMessage());
     }
 
     @Test
@@ -102,7 +107,7 @@ public class AccountTest extends UnitTest {
         );
 
         // then
-        Assertions.assertEquals(expectedMessage, actualError.message());
+        Assertions.assertEquals(expectedMessage, actualError.getMessage());
     }
 
     @Test
@@ -124,7 +129,7 @@ public class AccountTest extends UnitTest {
         );
 
         // then
-        Assertions.assertEquals(expectedMessage, actualError.message());
+        Assertions.assertEquals(expectedMessage, actualError.getMessage());
     }
 
     @Test
@@ -146,7 +151,7 @@ public class AccountTest extends UnitTest {
         );
 
         // then
-        Assertions.assertEquals(expectedMessage, actualError.message());
+        Assertions.assertEquals(expectedMessage, actualError.getMessage());
     }
 
     @Test
@@ -168,7 +173,7 @@ public class AccountTest extends UnitTest {
         );
 
         // then
-        Assertions.assertEquals(expectedMessage, actualError.message());
+        Assertions.assertEquals(expectedMessage, actualError.getMessage());
     }
 
     @Test
