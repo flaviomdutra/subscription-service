@@ -2,9 +2,6 @@ plugins {
     id("groovy-gradle-plugin")
 }
 
-sourceCompatibility = JavaVersion.VERSION_21
-targetCompatibility = JavaVersion.VERSION_21
-
 repositories {
     mavenCentral()
 }
