@@ -1,4 +1,5 @@
 package com.fullcycle.subscription.domain;
 
-public interface Identifier extends ValueObject {
+public interface Identifier<T> extends ValueObject {
+    T value();
 }
