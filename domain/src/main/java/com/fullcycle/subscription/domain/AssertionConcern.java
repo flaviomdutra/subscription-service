@@ -33,4 +33,12 @@ public interface AssertionConcern {
             throw DomainException.with(aMessage);
         }
     }
+
+    default String assertArgumentMaxLength(String val, int length, String aMessage) {
+        if (val != null && val.length() > length) {
+            throw DomainException.with(aMessage);
+        }
+
+        return aMessage;
+    }
 }

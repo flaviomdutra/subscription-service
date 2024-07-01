@@ -2,7 +2,6 @@ package com.fullcycle.subscription.domain.account;
 
 import com.fullcycle.subscription.domain.account.iam.UserId;
 import com.fullcycle.subscription.domain.exceptions.DomainException;
-import com.fullcycle.subscription.domain.person.Address;
 import com.fullcycle.subscription.domain.person.Document;
 import com.fullcycle.subscription.domain.person.Email;
 import com.fullcycle.subscription.domain.person.Name;
@@ -24,7 +23,7 @@ public class AccountCreatedTest {
         var expectedDocument = Document.create("12345678912", "cpf");
         var expectedAggregateType = "Account";
 
-        var actualAccount =  Account.newAccount(expectedAccountId, expectedUserId, expectedEmail, expectedName, expectedDocument);
+        var actualAccount = Account.newAccount(expectedAccountId, expectedUserId, expectedEmail, expectedName, expectedDocument);
 
         // when
         var actualEvent = new AccountEvent.AccountCreated(actualAccount);
