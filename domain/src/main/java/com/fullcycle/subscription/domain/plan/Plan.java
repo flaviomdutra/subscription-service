@@ -1,6 +1,7 @@
 package com.fullcycle.subscription.domain.plan;
 
 import com.fullcycle.subscription.domain.AggregateRoot;
+import com.fullcycle.subscription.domain.money.Money;
 import com.fullcycle.subscription.domain.utils.InstantUtils;
 
 import java.time.Instant;
@@ -11,7 +12,7 @@ public class Plan extends AggregateRoot<PlanId> {
     private String name;
     private String description;
     private boolean active;
-    private MonetaryAmount price;
+    private Money price;
     private Instant createdAt;
     private Instant updatedAt;
     private Instant deletedAt;
@@ -22,7 +23,7 @@ public class Plan extends AggregateRoot<PlanId> {
             final String aName,
             final String aDescription,
             final Boolean anActive,
-            final MonetaryAmount aPrice,
+            final Money aPrice,
             final Instant createdAt,
             final Instant updatedAt,
             final Instant deletedAt
@@ -43,7 +44,7 @@ public class Plan extends AggregateRoot<PlanId> {
             final String aName,
             final String aDescription,
             final Boolean anActive,
-            final MonetaryAmount aPrice
+            final Money aPrice
     ) {
         final var now = InstantUtils.now();
         final var isActive = anActive != null ? anActive : false;
@@ -57,7 +58,7 @@ public class Plan extends AggregateRoot<PlanId> {
             final String aName,
             final String aDescription,
             final Boolean anActive,
-            final MonetaryAmount aPrice,
+            final Money aPrice,
             final Instant createdAt,
             final Instant updatedAt,
             final Instant deletedAt
@@ -118,7 +119,7 @@ public class Plan extends AggregateRoot<PlanId> {
         return active;
     }
 
-    public MonetaryAmount price() {
+    public Money price() {
         return price;
     }
 
@@ -150,7 +151,7 @@ public class Plan extends AggregateRoot<PlanId> {
         this.description = description;
     }
 
-    private void setPrice(final MonetaryAmount price) {
+    private void setPrice(final Money price) {
         this.assertArgumentNotNull(price, "'price' should not be null");
         this.price = price;
     }

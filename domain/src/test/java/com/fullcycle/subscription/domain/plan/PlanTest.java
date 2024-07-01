@@ -1,6 +1,7 @@
 package com.fullcycle.subscription.domain.plan;
 
 import com.fullcycle.subscription.domain.exceptions.DomainException;
+import com.fullcycle.subscription.domain.money.Money;
 import com.fullcycle.subscription.domain.utils.InstantUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,7 @@ public class PlanTest {
                 Lorem Ipsum
                 """;
         var expectedActive = true;
-        var expectedPrice = new MonetaryAmount("BRL", 20.99);
+        var expectedPrice = new Money("BRL", 20.99);
 
         // when
         var actualPlan = Plan.newPlan(expectedId, expectedName, expectedDescription, expectedActive, expectedPrice);
@@ -47,7 +48,7 @@ public class PlanTest {
                 Lorem Ipsum
                 """;
         var expectedActive = false;
-        var expectedPrice = new MonetaryAmount("BRL", 20.99);
+        var expectedPrice = new Money("BRL", 20.99);
 
         // when
         var actualPlan = Plan.newPlan(expectedId, expectedName, expectedDescription, null, expectedPrice);
@@ -75,7 +76,7 @@ public class PlanTest {
                 Lorem Ipsum
                 """;
         var expectedActive = false;
-        var expectedPrice = new MonetaryAmount("BRL", 20.99);
+        var expectedPrice = new Money("BRL", 20.99);
         var expectedCreatedAt = InstantUtils.now();
         var expectedUpdatedAt = InstantUtils.now();
         var expectedDeletedAt = InstantUtils.now();
@@ -107,7 +108,7 @@ public class PlanTest {
                 Lorem Ipsum
                 """;
         var expectedActive = false;
-        var expectedPrice = new MonetaryAmount("BRL", 20.99);
+        var expectedPrice = new Money("BRL", 20.99);
         var expectedCreatedAt = InstantUtils.now();
         var expectedUpdatedAt = InstantUtils.now();
         var expectedDeletedAt = InstantUtils.now();
@@ -133,7 +134,7 @@ public class PlanTest {
                 Lorem Ipsum
                 """;
         var expectedActive = false;
-        var expectedPrice = new MonetaryAmount("BRL", 20.99);
+        var expectedPrice = new Money("BRL", 20.99);
         var expectedCreatedAt = InstantUtils.now();
         var expectedUpdatedAt = InstantUtils.now();
         var expectedDeletedAt = InstantUtils.now();
@@ -159,7 +160,7 @@ public class PlanTest {
                 Lorem Ipsum
                 """;
         var expectedActive = false;
-        var expectedPrice = new MonetaryAmount("BRL", 20.99);
+        var expectedPrice = new Money("BRL", 20.99);
         var expectedCreatedAt = InstantUtils.now();
         var expectedUpdatedAt = InstantUtils.now();
         var expectedDeletedAt = InstantUtils.now();
@@ -183,7 +184,7 @@ public class PlanTest {
         var expectedName = "Plano";
         var expectedDescription = "";
         var expectedActive = false;
-        var expectedPrice = new MonetaryAmount("BRL", 20.99);
+        var expectedPrice = new Money("BRL", 20.99);
         var expectedCreatedAt = InstantUtils.now();
         var expectedUpdatedAt = InstantUtils.now();
         var expectedDeletedAt = InstantUtils.now();
@@ -207,7 +208,7 @@ public class PlanTest {
         var expectedName = "Plano";
         String expectedDescription = null;
         var expectedActive = false;
-        var expectedPrice = new MonetaryAmount("BRL", 20.99);
+        var expectedPrice = new Money("BRL", 20.99);
         var expectedCreatedAt = InstantUtils.now();
         var expectedUpdatedAt = InstantUtils.now();
         var expectedDeletedAt = InstantUtils.now();
@@ -234,7 +235,7 @@ public class PlanTest {
                 Lorem Ipsum
                 """;
         Boolean expectedActive = null;
-        var expectedPrice = new MonetaryAmount("BRL", 20.99);
+        var expectedPrice = new Money("BRL", 20.99);
         var expectedCreatedAt = InstantUtils.now();
         var expectedUpdatedAt = InstantUtils.now();
         var expectedDeletedAt = InstantUtils.now();
@@ -260,7 +261,7 @@ public class PlanTest {
                 Lorem Ipsum
                 """;
         var expectedActive = false;
-        MonetaryAmount expectedPrice = null;
+        Money expectedPrice = null;
         var expectedCreatedAt = InstantUtils.now();
         var expectedUpdatedAt = InstantUtils.now();
         var expectedDeletedAt = InstantUtils.now();
@@ -285,7 +286,7 @@ public class PlanTest {
                 Lorem Ipsum
                 """;
         var expectedActive = false;
-        var expectedPrice = new MonetaryAmount("BRL", 0.0);
+        var expectedPrice = new Money("BRL", 0.0);
         var expectedCreatedAt = InstantUtils.now();
         var expectedUpdatedAt = InstantUtils.now();
         var expectedDeletedAt = InstantUtils.now();
@@ -317,7 +318,7 @@ public class PlanTest {
                 Lorem Ipsum
                 """;
         var expectedActive = false;
-        var expectedPrice = new MonetaryAmount("BRL", 0.0);
+        var expectedPrice = new Money("BRL", 0.0);
         Instant expectedCreatedAt = null;
         var expectedUpdatedAt = InstantUtils.now();
         var expectedDeletedAt = InstantUtils.now();
@@ -343,7 +344,7 @@ public class PlanTest {
                 Lorem Ipsum
                 """;
         var expectedActive = false;
-        var expectedPrice = new MonetaryAmount("BRL", 0.0);
+        var expectedPrice = new Money("BRL", 0.0);
         var expectedCreatedAt = InstantUtils.now();
         Instant expectedUpdatedAt = null;
         var expectedDeletedAt = InstantUtils.now();
@@ -368,7 +369,7 @@ public class PlanTest {
                 Lorem Ipsum
                 """;
         var expectedActive = false;
-        var expectedPrice = new MonetaryAmount("BRL", 20.0);
+        var expectedPrice = new Money("BRL", 20.0);
         var expectedCreatedAt = InstantUtils.now();
         var expectedUpdatedAt = InstantUtils.now();
         Instant expectedDeletedAt = null;
@@ -400,7 +401,7 @@ public class PlanTest {
                 Lorem Ipsum
                 """;
         var expectedActive = true;
-        var expectedPrice = new MonetaryAmount("BRL", 20.99);
+        var expectedPrice = new Money("BRL", 20.99);
 
         var actualPlan = Plan.newPlan(expectedId, expectedName, expectedDescription, expectedActive, expectedPrice);
         Thread.sleep(1); // Sleep for updatedAt time change
@@ -431,7 +432,7 @@ public class PlanTest {
                 Lorem Ipsum
                 """;
         var expectedActive = false;
-        var expectedPrice = new MonetaryAmount("BRL", 20.99);
+        var expectedPrice = new Money("BRL", 20.99);
 
         var actualPlan = Plan.newPlan(expectedId, expectedName, expectedDescription, true, expectedPrice);
         Assertions.assertTrue(actualPlan.active());
@@ -464,7 +465,7 @@ public class PlanTest {
                 Lorem Ipsum
                 """;
         var expectedActive = true;
-        var expectedPrice = new MonetaryAmount("BRL", 20.99);
+        var expectedPrice = new Money("BRL", 20.99);
 
         var actualPlan = Plan.newPlan(expectedId, expectedName, expectedDescription, false, expectedPrice);
         Assertions.assertFalse(actualPlan.active());
@@ -498,7 +499,7 @@ public class PlanTest {
                 Lorem Ipsum
                 """;
         var expectedActive = true;
-        var expectedPrice = new MonetaryAmount("BRL", 20.99);
+        var expectedPrice = new Money("BRL", 20.99);
 
         var actualPlan = Plan.newPlan(expectedId, "Freemium", "Sample description", false, expectedPrice);
         Thread.sleep(1); // Sleep for updatedAt time change
