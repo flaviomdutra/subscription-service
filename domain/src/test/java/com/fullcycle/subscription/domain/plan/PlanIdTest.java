@@ -1,10 +1,10 @@
 package com.fullcycle.subscription.domain.plan;
 
 import com.fullcycle.subscription.domain.exceptions.DomainException;
-import com.fullcycle.subscription.domain.person.Email;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PlanIdTest {
     @Test

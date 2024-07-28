@@ -9,7 +9,7 @@ public final class PlanId implements Identifier<Long> {
     private final Long value;
 
     public PlanId(final Long value) {
-        if(value == null) {
+        if (value == null) {
             throw DomainException.with("'planId' should not be null");
         }
         this.value = value;
