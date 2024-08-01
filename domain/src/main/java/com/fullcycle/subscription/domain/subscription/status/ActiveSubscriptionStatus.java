@@ -3,8 +3,6 @@ package com.fullcycle.subscription.domain.subscription.status;
 import com.fullcycle.subscription.domain.exceptions.DomainException;
 import com.fullcycle.subscription.domain.subscription.Subscription;
 
-import java.util.Objects;
-
 import static com.fullcycle.subscription.domain.subscription.SubscriptionCommand.ChangeStatus;
 
 public final class ActiveSubscriptionStatus extends AbstractSubscriptionStatus {
@@ -31,19 +29,16 @@ public final class ActiveSubscriptionStatus extends AbstractSubscriptionStatus {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) return true;
-        return obj == null || obj.getClass() != this.getClass();
+        return obj != null && obj.getClass().equals(getClass());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(subscription);
+        return getClass().hashCode();
     }
 
     @Override
     public String toString() {
-        return "ActiveSubscriptionStatus[" +
-                "subscription=" + subscription + ']';
+        return value();
     }
-
 }

@@ -15,12 +15,20 @@ public sealed interface SubscriptionStatus permits
     String CANCELED = "canceled";
 
     static SubscriptionStatus create(final String status, final Subscription aSubscription) {
+        if (aSubscription == null) {
+            throw DomainException.with("'subscription' should not be null");
+        }
+
+        if (status == null) {
+            throw DomainException.with("'status' should not be null");
+        }
+
         return switch (status) {
             case ACTIVE -> new ActiveSubscriptionStatus(aSubscription);
             case CANCELED -> new CanceledSubscriptionStatus(aSubscription);
             case INCOMPLETE -> new IncompleteSubscriptionStatus(aSubscription);
             case TRAILING -> new TrailingSubscriptionStatus(aSubscription);
-            default -> throw DomainException.with("Invalid status: %".formatted(status));
+            default -> throw DomainException.with("Invalid status: %s".formatted(status));
         };
     }
 
