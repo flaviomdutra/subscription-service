@@ -11,6 +11,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class TrailingSubscriptionStatusTest {
 
     @Test
+    public void givenInstances_whenCallsToString_shouldReturnValue() {
+        // given
+        var expectedString = "trailing";
+        var one = new TrailingSubscriptionStatus(Subscription.newSubscription(new SubscriptionId("SUB"), new AccountId("ACC123"), Fixture.Plans.plus()));
+
+        // when
+        var actualString = one.toString();
+
+        // then
+        assertEquals(expectedString, actualString);
+    }
+
+    @Test
     public void givenTwoInstances_whenCallsEquals_shouldCompareClasses() {
         // given
         var expectedEquals = true;

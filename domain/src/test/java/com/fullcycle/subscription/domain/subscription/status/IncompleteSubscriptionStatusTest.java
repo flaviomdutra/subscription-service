@@ -11,11 +11,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class IncompleteSubscriptionStatusTest {
-
     private static Subscription incompleteSubscription() {
         var expectedSubscription = Subscription.newSubscription(new SubscriptionId("SUB"), new AccountId("ACC123"), Fixture.Plans.plus());
         expectedSubscription.status().incomplete();
         return expectedSubscription;
+    }
+
+    @Test
+    public void givenInstances_whenCallsToString_shouldReturnValue() {
+        // given
+        var expectedString = "incomplete";
+        var one = new IncompleteSubscriptionStatus(Subscription.newSubscription(new SubscriptionId("SUB"), new AccountId("ACC123"), Fixture.Plans.plus()));
+
+        // when
+        var actualString = one.toString();
+
+        // then
+        assertEquals(expectedString, actualString);
     }
 
     @Test
