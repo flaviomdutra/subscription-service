@@ -54,10 +54,10 @@ class SubscriptionStatusTest {
     }
 
     @Test
-    public void givenTrailingStatus_whenCallsCreate_shouldInstantiateTrailingSubscriptionStatus() {
+    public void givenTrialingStatus_whenCallsCreate_shouldInstantiateTrialingSubscriptionStatus() {
         // given
-        var expectedStatus = "trailing";
-        var expectedStatusClass = TrailingSubscriptionStatus.class;
+        var expectedStatus = "trialing";
+        var expectedStatusClass = TrialingSubscriptionStatus.class;
         var expectedSubscription = Subscription.newSubscription(new SubscriptionId("SUB"), new AccountId("ACC123"), Fixture.Plans.plus());
 
         // when

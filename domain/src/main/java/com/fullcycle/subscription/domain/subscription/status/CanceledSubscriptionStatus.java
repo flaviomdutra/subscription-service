@@ -6,8 +6,8 @@ import com.fullcycle.subscription.domain.subscription.Subscription;
 public record CanceledSubscriptionStatus(Subscription subscription) implements SubscriptionStatus {
 
     @Override
-    public void trailing() {
-        throw DomainException.with("Subscription with status canceled can't transit to trailing");
+    public void trialing() {
+        throw DomainException.with("Subscription with status canceled can't transit to trialing");
     }
 
     @Override

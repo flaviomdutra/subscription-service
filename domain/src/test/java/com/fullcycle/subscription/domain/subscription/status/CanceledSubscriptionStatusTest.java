@@ -57,16 +57,16 @@ class CanceledSubscriptionStatusTest {
     }
 
     @Test
-    public void givenCanceledStatus_whenCallsTrailing_shouldExpectError() {
+    public void givenCanceledStatus_whenCallsTrialing_shouldExpectError() {
         // given
-        var expectedError = "Subscription with status canceled can't transit to trailing";
+        var expectedError = "Subscription with status canceled can't transit to trialing";
         var expectedStatusClass = CanceledSubscriptionStatus.class;
         var expectedSubscription = canceledSubscription();
 
         var target = new CanceledSubscriptionStatus(expectedSubscription);
 
         // when
-        var actualError = assertThrows(DomainException.class, () -> target.trailing());
+        var actualError = assertThrows(DomainException.class, () -> target.trialing());
 
         // then
         assertEquals(expectedError, actualError.getMessage());

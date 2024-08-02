@@ -8,13 +8,13 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class TrailingSubscriptionStatusTest {
+class TrialingSubscriptionStatusTest {
 
     @Test
     public void givenInstances_whenCallsToString_shouldReturnValue() {
         // given
-        var expectedString = "trailing";
-        var one = new TrailingSubscriptionStatus(Subscription.newSubscription(new SubscriptionId("SUB"), new AccountId("ACC123"), Fixture.Plans.plus()));
+        var expectedString = "trialing";
+        var one = new TrialingSubscriptionStatus(Subscription.newSubscription(new SubscriptionId("SUB"), new AccountId("ACC123"), Fixture.Plans.plus()));
 
         // when
         var actualString = one.toString();
@@ -27,8 +27,8 @@ class TrailingSubscriptionStatusTest {
     public void givenTwoInstances_whenCallsEquals_shouldCompareClasses() {
         // given
         var expectedEquals = true;
-        var one = new TrailingSubscriptionStatus(Subscription.newSubscription(new SubscriptionId("SUB"), new AccountId("ACC123"), Fixture.Plans.plus()));
-        var two = new TrailingSubscriptionStatus(Subscription.newSubscription(new SubscriptionId("SUB2"), new AccountId("ACC123"), Fixture.Plans.plus()));
+        var one = new TrialingSubscriptionStatus(Subscription.newSubscription(new SubscriptionId("SUB"), new AccountId("ACC123"), Fixture.Plans.plus()));
+        var two = new TrialingSubscriptionStatus(Subscription.newSubscription(new SubscriptionId("SUB2"), new AccountId("ACC123"), Fixture.Plans.plus()));
 
         // when
         var actualEquals = one.equals(two);
@@ -41,19 +41,19 @@ class TrailingSubscriptionStatusTest {
     public void givenTwoInstances_whenCallsHashCode_shouldBeEquals() {
         // given
         var expectedEquals = true;
-        var one = new TrailingSubscriptionStatus(Subscription.newSubscription(new SubscriptionId("SUB"), new AccountId("ACC123"), Fixture.Plans.plus()));
-        var two = new TrailingSubscriptionStatus(Subscription.newSubscription(new SubscriptionId("SUB2"), new AccountId("ACC123"), Fixture.Plans.plus()));
+        var one = new TrialingSubscriptionStatus(Subscription.newSubscription(new SubscriptionId("SUB"), new AccountId("ACC123"), Fixture.Plans.plus()));
+        var two = new TrialingSubscriptionStatus(Subscription.newSubscription(new SubscriptionId("SUB2"), new AccountId("ACC123"), Fixture.Plans.plus()));
 
         // then
         assertEquals(one.hashCode(), two.hashCode(), "O hashCode deveria levar em conta apenas a classe do status e não a subscription");
     }
 
     @Test
-    public void givenTrailingStatus_whenCallsActive_shouldTransitToActiveStatus() {
+    public void givenTrialingStatus_whenCallsActive_shouldTransitToActiveStatus() {
         // given
         var expectedStatusClass = ActiveSubscriptionStatus.class;
         var expectedSubscription = Subscription.newSubscription(new SubscriptionId("SUB"), new AccountId("ACC123"), Fixture.Plans.plus());
-        var target = new TrailingSubscriptionStatus(expectedSubscription);
+        var target = new TrialingSubscriptionStatus(expectedSubscription);
 
         // when
         target.active();
@@ -63,11 +63,11 @@ class TrailingSubscriptionStatusTest {
     }
 
     @Test
-    public void givenTrailingStatus_whenCallsCancel_shouldTransitToCanceledStatus() {
+    public void givenTrialingStatus_whenCallsCancel_shouldTransitToCanceledStatus() {
         // given
         var expectedStatusClass = CanceledSubscriptionStatus.class;
         var expectedSubscription = Subscription.newSubscription(new SubscriptionId("SUB"), new AccountId("ACC123"), Fixture.Plans.plus());
-        var target = new TrailingSubscriptionStatus(expectedSubscription);
+        var target = new TrialingSubscriptionStatus(expectedSubscription);
 
         // when
         target.cancel();
@@ -77,25 +77,25 @@ class TrailingSubscriptionStatusTest {
     }
 
     @Test
-    public void givenTrailingStatus_whenCallsTrailing_shouldDoNothing() {
+    public void givenTrialingStatus_whenCallsTrialing_shouldDoNothing() {
         // given
-        var expectedStatusClass = TrailingSubscriptionStatus.class;
+        var expectedStatusClass = TrialingSubscriptionStatus.class;
         var expectedSubscription = Subscription.newSubscription(new SubscriptionId("SUB"), new AccountId("ACC123"), Fixture.Plans.plus());
-        var target = new TrailingSubscriptionStatus(expectedSubscription);
+        var target = new TrialingSubscriptionStatus(expectedSubscription);
 
         // when
-        target.trailing();
+        target.trialing();
 
         // then
         assertEquals(expectedStatusClass, expectedSubscription.status().getClass());
     }
 
     @Test
-    public void givenTrailingStatus_whenCallsIncomplete_shouldTransitToIncompleteStatus() {
+    public void givenTrialingStatus_whenCallsIncomplete_shouldTransitToIncompleteStatus() {
         // given
         var expectedStatusClass = IncompleteSubscriptionStatus.class;
         var expectedSubscription = Subscription.newSubscription(new SubscriptionId("SUB"), new AccountId("ACC123"), Fixture.Plans.plus());
-        var target = new TrailingSubscriptionStatus(expectedSubscription);
+        var target = new TrialingSubscriptionStatus(expectedSubscription);
 
         // when
         target.incomplete();

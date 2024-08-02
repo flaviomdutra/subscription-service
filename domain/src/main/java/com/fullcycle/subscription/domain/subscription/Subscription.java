@@ -4,6 +4,9 @@ import com.fullcycle.subscription.domain.AggregateRoot;
 import com.fullcycle.subscription.domain.account.AccountId;
 import com.fullcycle.subscription.domain.plan.Plan;
 import com.fullcycle.subscription.domain.plan.PlanId;
+import com.fullcycle.subscription.domain.subscription.SubscriptionCommand.CancelSubscription;
+import com.fullcycle.subscription.domain.subscription.SubscriptionCommand.IncompleteSubscription;
+import com.fullcycle.subscription.domain.subscription.SubscriptionCommand.RenewSubscription;
 import com.fullcycle.subscription.domain.subscription.status.SubscriptionStatus;
 import com.fullcycle.subscription.domain.utils.InstantUtils;
 
@@ -54,7 +57,10 @@ public class Subscription extends AggregateRoot<SubscriptionId> {
             final Plan selectedPlan
     ) {
         final var now = InstantUtils.now();
-        return new Subscription(anId, 0, anAccountId, selectedPlan.id(), LocalDate.now().plusMonths(1), SubscriptionStatus.TRAILING, null, null, now, now);
+        final var aNewSubscription = new Subscription(anId, 0, anAccountId, selectedPlan.id(), LocalDate.now().plusMonths(1), SubscriptionStatus.TRIALING, null, null, now, now);
+        aNewSubscription.registerEvent(new SubscriptionEvent.SubscriptionCreated(aNewSubscription));
+
+        return aNewSubscription;
     }
 
     public static Subscription with(
@@ -91,14 +97,38 @@ public class Subscription extends AggregateRoot<SubscriptionId> {
         for (var cmd : cmds) {
             switch (cmd) {
                 case ChangeStatus c -> apply(c);
+                case IncompleteSubscription c -> apply(c);
+                case RenewSubscription c -> apply(c);
+                case CancelSubscription c -> apply(c);
             }
         }
 
         this.setUpdatedAt(InstantUtils.now());
     }
 
+    private void apply(final CancelSubscription cmd) {
+        this.status.cancel();
+        this.registerEvent(new SubscriptionEvent.SubscriptionCanceled(this));
+
+    }
+
+    private void apply(final RenewSubscription cmd) {
+        this.status.active();
+        this.setLastTransactionId(cmd.aTransactionId());
+        this.setDueDate(dueDate.plusMonths(1));
+        this.setLastRenewDate(InstantUtils.now());
+        this.registerEvent(new SubscriptionEvent.SubscriptionRenewed(this, cmd.selectedPlan()));
+    }
+
+
+    private void apply(final IncompleteSubscription cmd) {
+        this.status.incomplete();
+        this.setLastTransactionId(cmd.aTransactionId());
+        this.registerEvent(new SubscriptionEvent.SubscriptionIncomplete(this, cmd.aReason()));
+    }
+
     private void apply(final ChangeStatus cmd) {
-        this.setStatus(cmd.status());
+        this.setStatus(SubscriptionStatus.create(cmd.status(), this));
     }
 
     public int version() {

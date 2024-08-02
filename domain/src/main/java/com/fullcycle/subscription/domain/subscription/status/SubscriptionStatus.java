@@ -7,9 +7,9 @@ public sealed interface SubscriptionStatus permits
         AbstractSubscriptionStatus,
         CanceledSubscriptionStatus,
         IncompleteSubscriptionStatus,
-        TrailingSubscriptionStatus {
+        TrialingSubscriptionStatus {
 
-    String TRAILING = "trailing";
+    String TRIALING = "trialing";
     String INCOMPLETE = "incomplete";
     String ACTIVE = "active";
     String CANCELED = "canceled";
@@ -27,12 +27,12 @@ public sealed interface SubscriptionStatus permits
             case ACTIVE -> new ActiveSubscriptionStatus(aSubscription);
             case CANCELED -> new CanceledSubscriptionStatus(aSubscription);
             case INCOMPLETE -> new IncompleteSubscriptionStatus(aSubscription);
-            case TRAILING -> new TrailingSubscriptionStatus(aSubscription);
+            case TRIALING -> new TrialingSubscriptionStatus(aSubscription);
             default -> throw DomainException.with("Invalid status: %s".formatted(status));
         };
     }
 
-    void trailing();
+    void trialing();
 
     void incomplete();
 
@@ -45,7 +45,7 @@ public sealed interface SubscriptionStatus permits
             case ActiveSubscriptionStatus s -> ACTIVE;
             case CanceledSubscriptionStatus s -> CANCELED;
             case IncompleteSubscriptionStatus s -> INCOMPLETE;
-            case TrailingSubscriptionStatus s -> TRAILING;
+            case TrialingSubscriptionStatus s -> TRIALING;
         };
     }
 }

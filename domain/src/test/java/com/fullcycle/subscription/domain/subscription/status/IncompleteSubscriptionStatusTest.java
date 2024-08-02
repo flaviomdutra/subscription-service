@@ -56,16 +56,16 @@ class IncompleteSubscriptionStatusTest {
     }
 
     @Test
-    public void givenIncompleteStatus_whenCallsTrailing_shouldExpectError() {
+    public void givenIncompleteStatus_whenCallsTrialing_shouldExpectError() {
         // given
-        var expectedError = "Subscription with status incomplete can't transit to trailing";
+        var expectedError = "Subscription with status incomplete can't transit to trialing";
         var expectedStatusClass = IncompleteSubscriptionStatus.class;
         var expectedSubscription = incompleteSubscription();
 
         var target = new IncompleteSubscriptionStatus(expectedSubscription);
 
         // when
-        var actualError = assertThrows(DomainException.class, () -> target.trailing());
+        var actualError = assertThrows(DomainException.class, () -> target.trialing());
 
         // then
         assertEquals(expectedError, actualError.getMessage());

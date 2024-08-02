@@ -8,8 +8,8 @@ import static com.fullcycle.subscription.domain.subscription.SubscriptionCommand
 public record IncompleteSubscriptionStatus(Subscription subscription) implements SubscriptionStatus {
 
     @Override
-    public void trailing() {
-        throw DomainException.with("Subscription with status incomplete can't transit to trailing");
+    public void trialing() {
+        throw DomainException.with("Subscription with status incomplete can't transit to trialing");
     }
 
     @Override
@@ -19,12 +19,12 @@ public record IncompleteSubscriptionStatus(Subscription subscription) implements
 
     @Override
     public void active() {
-        this.subscription.execute(new ChangeStatus(new ActiveSubscriptionStatus(this.subscription)));
+        this.subscription.execute(new ChangeStatus(ACTIVE));
     }
 
     @Override
     public void cancel() {
-        this.subscription.execute(new ChangeStatus(new CanceledSubscriptionStatus(this.subscription)));
+        this.subscription.execute(new ChangeStatus(CANCELED));
     }
 
     @Override

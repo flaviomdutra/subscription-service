@@ -3,7 +3,7 @@ package com.fullcycle.subscription.domain.subscription.status;
 public sealed abstract class AbstractSubscriptionStatus implements SubscriptionStatus permits ActiveSubscriptionStatus {
 
     @Override
-    public void trailing() {
+    public void trialing() {
 
     }
 

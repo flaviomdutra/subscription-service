@@ -13,18 +13,18 @@ public final class ActiveSubscriptionStatus extends AbstractSubscriptionStatus {
     }
 
     @Override
-    public void trailing() {
-        throw DomainException.with("Subscription with status active can't transit to trailing");
+    public void trialing() {
+        throw DomainException.with("Subscription with status active can't transit to trialing");
     }
 
     @Override
     public void incomplete() {
-        this.subscription.execute(new ChangeStatus(new IncompleteSubscriptionStatus(this.subscription)));
+        this.subscription.execute(new ChangeStatus(INCOMPLETE));
     }
 
     @Override
     public void cancel() {
-        this.subscription.execute(new ChangeStatus(new CanceledSubscriptionStatus(this.subscription)));
+        this.subscription.execute(new ChangeStatus(CANCELED));
     }
 
     @Override

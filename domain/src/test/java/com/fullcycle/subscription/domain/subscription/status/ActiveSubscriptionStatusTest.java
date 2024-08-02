@@ -57,16 +57,16 @@ class ActiveSubscriptionStatusTest {
     }
 
     @Test
-    public void givenActiveStatus_whenCallsTrailing_shouldExpectError() {
+    public void givenActiveStatus_whenCallsTrialing_shouldExpectError() {
         // given
-        var expectedError = "Subscription with status active can't transit to trailing";
+        var expectedError = "Subscription with status active can't transit to trialing";
         var expectedStatusClass = ActiveSubscriptionStatus.class;
         var expectedSubscription = activeSubscription();
 
         var target = new ActiveSubscriptionStatus(expectedSubscription);
 
         // when
-        var actualError = assertThrows(DomainException.class, () -> target.trailing());
+        var actualError = assertThrows(DomainException.class, () -> target.trialing());
 
         // then
         assertEquals(expectedError, actualError.getMessage());
