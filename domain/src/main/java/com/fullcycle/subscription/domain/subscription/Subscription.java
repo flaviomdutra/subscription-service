@@ -58,7 +58,7 @@ public class Subscription extends AggregateRoot<SubscriptionId> {
     ) {
         final var now = InstantUtils.now();
         final var aNewSubscription = new Subscription(anId, 0, anAccountId, selectedPlan.id(), LocalDate.now().plusMonths(1), SubscriptionStatus.TRIALING, null, null, now, now);
-        aNewSubscription.registerEvent(new SubscriptionEvent.SubscriptionCreated(aNewSubscription));
+        aNewSubscription.registerEvent(new SubscriptionCreated(aNewSubscription));
 
         return aNewSubscription;
     }
@@ -108,7 +108,7 @@ public class Subscription extends AggregateRoot<SubscriptionId> {
 
     private void apply(final CancelSubscription cmd) {
         this.status.cancel();
-        this.registerEvent(new SubscriptionEvent.SubscriptionCanceled(this));
+        this.registerEvent(new SubscriptionCanceled(this));
 
     }
 
@@ -117,14 +117,14 @@ public class Subscription extends AggregateRoot<SubscriptionId> {
         this.setLastTransactionId(cmd.aTransactionId());
         this.setDueDate(dueDate.plusMonths(1));
         this.setLastRenewDate(InstantUtils.now());
-        this.registerEvent(new SubscriptionEvent.SubscriptionRenewed(this, cmd.selectedPlan()));
+        this.registerEvent(new SubscriptionRenewed(this, cmd.selectedPlan()));
     }
 
 
     private void apply(final IncompleteSubscription cmd) {
         this.status.incomplete();
         this.setLastTransactionId(cmd.aTransactionId());
-        this.registerEvent(new SubscriptionEvent.SubscriptionIncomplete(this, cmd.aReason()));
+        this.registerEvent(new SubscriptionIncomplete(this, cmd.aReason()));
     }
 
     private void apply(final ChangeStatus cmd) {
