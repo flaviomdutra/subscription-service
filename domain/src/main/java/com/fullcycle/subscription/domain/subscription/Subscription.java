@@ -7,7 +7,9 @@ import com.fullcycle.subscription.domain.plan.PlanId;
 import com.fullcycle.subscription.domain.subscription.SubscriptionCommand.CancelSubscription;
 import com.fullcycle.subscription.domain.subscription.SubscriptionCommand.IncompleteSubscription;
 import com.fullcycle.subscription.domain.subscription.SubscriptionCommand.RenewSubscription;
+import com.fullcycle.subscription.domain.subscription.status.ActiveSubscriptionStatus;
 import com.fullcycle.subscription.domain.subscription.status.SubscriptionStatus;
+import com.fullcycle.subscription.domain.subscription.status.TrialingSubscriptionStatus;
 import com.fullcycle.subscription.domain.utils.InstantUtils;
 
 import java.time.Instant;
@@ -207,5 +209,13 @@ public class Subscription extends AggregateRoot<SubscriptionId> {
     private void setUpdatedAt(final Instant updatedAt) {
         this.assertArgumentNotNull(updatedAt, "'updatedAt' should not be null");
         this.updatedAt = updatedAt;
+    }
+
+    public boolean isTrial() {
+        return this.status instanceof TrialingSubscriptionStatus;
+    }
+
+    public boolean isActive() {
+        return this.status instanceof ActiveSubscriptionStatus;
     }
 }
