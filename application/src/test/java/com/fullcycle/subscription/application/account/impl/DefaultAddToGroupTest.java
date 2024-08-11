@@ -1,6 +1,6 @@
 package com.fullcycle.subscription.application.account.impl;
 
-import com.fullcycle.subscription.application.account.AddToSubscribersGroup;
+import com.fullcycle.subscription.application.account.AddToGroup;
 import com.fullcycle.subscription.domain.Fixture;
 import com.fullcycle.subscription.domain.UnitTest;
 import com.fullcycle.subscription.domain.account.AccountGateway;
@@ -17,7 +17,7 @@ import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
-class DefaultAddToSubscribersGroupTest extends UnitTest {
+class DefaultAddToGroupTest extends UnitTest {
 
     @Mock
     private AccountGateway accountGateway;
@@ -29,7 +29,7 @@ class DefaultAddToSubscribersGroupTest extends UnitTest {
     private SubscriptionGateway subscriptionGateway;
 
     @InjectMocks
-    private DefaultAddToSubscribersGroup target;
+    private DefaultAddToGroup target;
 
     @Test
     public void givenTrialSubscription_whenCallsExecute_shouldCallIdentityProvider() {
@@ -47,7 +47,7 @@ class DefaultAddToSubscribersGroupTest extends UnitTest {
         doNothing().when(identityProviderGateway).addUserToGroup(any(), any());
 
         // when
-        this.target.execute(new AddToSubscribersGroupTestInput(expectedAccountId.value(), expectedGroupId.value(), expectedSubscriptionId.value()));
+        this.target.execute(new AddToGroupTestInput(expectedAccountId.value(), expectedSubscriptionId.value(), expectedGroupId.value()));
 
         // then
         verify(subscriptionGateway, times(1)).subscriptionOfId(eq(expectedSubscriptionId));
@@ -55,11 +55,11 @@ class DefaultAddToSubscribersGroupTest extends UnitTest {
         verify(identityProviderGateway, times(1)).addUserToGroup(eq(john.userId()), eq(expectedGroupId));
     }
 
-    record AddToSubscribersGroupTestInput(
+    record AddToGroupTestInput(
             String accountId,
-            String groupId,
-            String subscriptionId
-    ) implements AddToSubscribersGroup.Input {
+            String subscriptionId,
+            String groupId
+    ) implements AddToGroup.Input {
 
     }
 }

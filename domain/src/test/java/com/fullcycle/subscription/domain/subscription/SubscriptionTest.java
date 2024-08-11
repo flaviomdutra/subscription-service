@@ -94,7 +94,7 @@ public class SubscriptionTest {
     }
 
     @Test
-    public void givenTrialSubscription_whenExecuteIncompleteCommand_shouldTransitToIncompleteState() {
+    public void givenTrialSubscription_whenExecuteIncompleteCommand_shouldTransitToIncompleteState() throws InterruptedException {
         // given
         var expectedId = new SubscriptionId("SUB123");
         var expectedVersion = 0;
@@ -124,6 +124,7 @@ public class SubscriptionTest {
                 );
 
         // when
+        Thread.sleep(1);
         actualSubscription.execute(new IncompleteSubscription(expectedReason, expectedLastTransactionId));
 
         // then
