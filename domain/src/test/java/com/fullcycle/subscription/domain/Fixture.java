@@ -5,6 +5,7 @@ import com.fullcycle.subscription.domain.account.Account;
 import com.fullcycle.subscription.domain.account.AccountId;
 import com.fullcycle.subscription.domain.account.idp.UserId;
 import com.fullcycle.subscription.domain.money.Money;
+import com.fullcycle.subscription.domain.person.Address;
 import com.fullcycle.subscription.domain.person.Document;
 import com.fullcycle.subscription.domain.person.Email;
 import com.fullcycle.subscription.domain.person.Name;
@@ -21,12 +22,14 @@ public final class Fixture {
     public static final class Accounts {
 
         public static Account john() {
-            return Account.newAccount(
+            return Account.with(
                     new AccountId("ACC-JOHN"),
+                    1,
                     new UserId("USER"),
                     new Email("john@doe.com"),
                     new Name("John", "Doe"),
-                    Document.create("12345678900", Document.Cpf.TYPE)
+                    Document.create("12345678900", Document.Cpf.TYPE),
+                    new Address("12312123", "123", "", "Brasil")
             );
         }
     }

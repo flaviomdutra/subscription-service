@@ -11,6 +11,6 @@ public record Transaction(String transactionId, String errorMessage) {
     }
 
     public boolean isSuccess() {
-        return errorMessage != null;
+        return errorMessage == null;
     }
 }
