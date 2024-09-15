@@ -3,6 +3,10 @@ package com.fullcycle.subscription.infrastructure.rest;
 import com.fullcycle.subscription.ControllerTest;
 import com.fullcycle.subscription.domain.account.AccountId;
 import com.fullcycle.subscription.domain.person.Document;
+import com.fullcycle.subscription.infrastructure.mediator.SignUpMediator;
+import com.fullcycle.subscription.infrastructure.rest.controllers.AccountRestController;
+import com.fullcycle.subscription.infrastructure.rest.models.req.SignUpRequest;
+import com.fullcycle.subscription.infrastructure.rest.models.res.SignUpResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -42,7 +46,7 @@ public class AccountRestApiTest {
         var expectedDocumentType = Document.Cpf.TYPE;
         var expectedAccountId = new AccountId("123");
 
-        when(signUpMediator.signUp(any())).thenReturn(new SignUpResponse(expectedAccountId));
+        when(signUpMediator.signUp(any())).thenReturn(new SignUpResponse(expectedAccountId.value()));
 
         var json = """
                 {
