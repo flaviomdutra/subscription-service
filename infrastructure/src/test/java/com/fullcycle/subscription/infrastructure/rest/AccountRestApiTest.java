@@ -95,7 +95,7 @@ public class AccountRestApiTest {
         var expectedDocumentNumber = "11122233344";
         var expectedDocumentType = Document.Cpf.TYPE;
         var expectedErrorProperty = "firstname";
-        var expectedErrorMessage = "'firstname' must not be empty";
+        var expectedErrorMessage = "must not be blank";
 
         var json = """
                 {
