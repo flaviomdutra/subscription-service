@@ -5,7 +5,6 @@ import com.fullcycle.subscription.application.Presenter;
 import com.fullcycle.subscription.application.plan.ChangePlan;
 import com.fullcycle.subscription.application.plan.CreatePlan;
 import com.fullcycle.subscription.domain.plan.PlanId;
-import com.fullcycle.subscription.infrastructure.ApiTest;
 import com.fullcycle.subscription.infrastructure.rest.controllers.PlanRestController;
 import com.fullcycle.subscription.infrastructure.rest.models.res.ChangePlanResponse;
 import com.fullcycle.subscription.infrastructure.rest.models.res.CreatePlanResponse;
@@ -18,6 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static com.fullcycle.subscription.ApiTest.admin;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
@@ -49,8 +49,8 @@ public class PlanRestApiTest {
         // given
         var expectedName = "Plus";
         var expectedDescription = "O melhor plano";
-        var expectedPrice = 20d;
-        var expectedCurrency = "USD";
+        var expectedPrice = 20D;
+        var expectedCurrency = "BRL";
         var expectedActive = true;
         var expectedPlanId = new PlanId(123L);
 
@@ -63,17 +63,18 @@ public class PlanRestApiTest {
                 {
                     "name": "%s",
                     "description": "%s",
-                    "price": "%s",
+                    "price": %s,
                     "currency": "%s",
-                    "active": "%s"
+                    "active": %s
                 }
                 """.formatted(expectedName, expectedDescription, expectedPrice, expectedCurrency, expectedActive);
+
         // when
         var aRequest = post("/plans")
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(json)
-                .with(ApiTest.admin());
+                .with(admin());
 
         var aResponse = this.mvc.perform(aRequest);
 
@@ -98,22 +99,21 @@ public class PlanRestApiTest {
     @Test
     public void givenEmptyFirstname_shouldReturnError() throws Exception {
         // given
-        var expectedName = " ";
-        var expectedDescription = "O melhor plano";
-        var expectedPrice = 20d;
-        var expectedCurrency = "USD";
-        var expectedActive = true;
-        var expectedPlanId = new PlanId(123L);
         var expectedErrorProperty = "name";
         var expectedErrorMessage = "must not be blank";
+        var expectedName = " ";
+        var expectedDescription = "O melhor plano";
+        var expectedPrice = 20D;
+        var expectedCurrency = "BRL";
+        var expectedActive = true;
 
         var json = """
                 {
                     "name": "%s",
                     "description": "%s",
-                    "price": "%s",
+                    "price": %s,
                     "currency": "%s",
-                    "active": "%s"
+                    "active": %s
                 }
                 """.formatted(expectedName, expectedDescription, expectedPrice, expectedCurrency, expectedActive);
 
@@ -122,7 +122,7 @@ public class PlanRestApiTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(json)
-                .with(ApiTest.admin());
+                .with(admin());
 
         var aResponse = this.mvc.perform(aRequest);
 
@@ -143,32 +143,33 @@ public class PlanRestApiTest {
         var expectedId = 123L;
         var expectedName = "Plus";
         var expectedDescription = "O melhor plano";
-        var expectedPrice = 20d;
-        var expectedCurrency = "USD";
+        var expectedPrice = 20D;
+        var expectedCurrency = "BRL";
         var expectedActive = true;
         var expectedPlanId = new PlanId(123L);
 
-        when(createPlan.execute(any(), any())).thenAnswer(call -> {
+        when(changePlan.execute(any(), any())).thenAnswer(call -> {
             Presenter<ChangePlan.Output, ChangePlanResponse> p = call.getArgument(1);
             return p.apply(new PlanTestOutput(expectedPlanId));
         });
 
         var json = """
                 {
-                    "plan_id": "%s",
+                    "plan_id": %s,
                     "name": "%s",
                     "description": "%s",
-                    "price": "%s",
+                    "price": %s,
                     "currency": "%s",
-                    "active": "%s"
+                    "active": %s
                 }
                 """.formatted(expectedId, expectedName, expectedDescription, expectedPrice, expectedCurrency, expectedActive);
+
         // when
         var aRequest = put("/plans/{id}", expectedId)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(json)
-                .with(ApiTest.admin());
+                .with(admin());
 
         var aResponse = this.mvc.perform(aRequest);
 
@@ -192,4 +193,5 @@ public class PlanRestApiTest {
 
     record PlanTestOutput(PlanId planId) implements CreatePlan.Output, ChangePlan.Output {
     }
+
 }

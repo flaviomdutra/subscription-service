@@ -1,4 +1,4 @@
-package com.fullcycle.subscription.infrastructure;
+package com.fullcycle.subscription;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor;
