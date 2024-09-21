@@ -8,7 +8,9 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 public interface ApiTest {
 
     static JwtRequestPostProcessor admin() {
-        return jwt().authorities(new SimpleGrantedAuthority("ROLE_SUBSCRIPTION_ADMIN"));
+        return jwt()
+                .jwt(builder -> builder.claim("accountId", "123"))
+                .authorities(new SimpleGrantedAuthority("ROLE_SUBSCRIPTION_ADMIN"));
     }
 
 }
