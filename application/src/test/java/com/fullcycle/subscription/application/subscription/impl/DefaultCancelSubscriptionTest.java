@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 class DefaultCancelSubscriptionTest extends UnitTest {
@@ -58,7 +59,7 @@ class DefaultCancelSubscriptionTest extends UnitTest {
         var expectedSubscriptionStatus = CanceledSubscriptionStatus.CANCELED;
 
 
-        when(this.subscriptionGateway.subscriptionOfId(any())).thenReturn(Optional.of(expectedSubscription));
+        when(this.subscriptionGateway.latestSubscriptionOfAccount(eq(expectedAccount.id()))).thenReturn(Optional.of(expectedSubscription));
         when(this.subscriptionGateway.save(any())).thenAnswer(returnsFirstArg());
 
         // when
