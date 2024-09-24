@@ -82,7 +82,7 @@ class DefaultChargeSubscriptionTest extends UnitTest {
         var expectedDueDate = referenceDate.toLocalDate();
 
         when(clock.instant()).thenReturn(InstantUtils.now());
-        when(subscriptionGateway.subscriptionOfId(any())).thenReturn(Optional.of(expectedSubscription));
+        when(subscriptionGateway.latestSubscriptionOfAccount(eq(expectedAccount.id()))).thenReturn(Optional.of(expectedSubscription));
 
         // when
         var actualOutput = this.target.execute(new ChargeSubscriptionTestInput(expectedAccount.id().value(), expectedSubscription.id().value(), Payment.PIX, null));
@@ -106,7 +106,7 @@ class DefaultChargeSubscriptionTest extends UnitTest {
         var expectedTransaction = Transaction.success("TRS-123");
 
         when(clock.instant()).thenReturn(InstantUtils.now());
-        when(subscriptionGateway.subscriptionOfId(any())).thenReturn(Optional.of(expectedSubscription));
+        when(subscriptionGateway.latestSubscriptionOfAccount(eq(expectedAccount.id()))).thenReturn(Optional.of(expectedSubscription));
         when(planGateway.planOfId(any())).thenReturn(Optional.of(expectedPlan));
         when(accountGateway.accountOfId(any())).thenReturn(Optional.of(expectedAccount));
         when(paymentGateway.processPayment(any())).thenReturn(expectedTransaction);
@@ -120,7 +120,7 @@ class DefaultChargeSubscriptionTest extends UnitTest {
         Assertions.assertEquals(expectedStatus, actualOutput.subscriptionStatus());
         Assertions.assertEquals(expectedTransaction, actualOutput.paymentTransaction());
 
-        verify(subscriptionGateway, times(1)).subscriptionOfId(eq(expectedSubscription.id()));
+        verify(subscriptionGateway, times(1)).latestSubscriptionOfAccount(eq(expectedAccount.id()));
         verify(planGateway, times(1)).planOfId(eq(expectedPlan.id()));
         verify(accountGateway, times(1)).accountOfId(eq(expectedAccount.id()));
         verify(subscriptionGateway, times(1)).save(any());
@@ -144,7 +144,7 @@ class DefaultChargeSubscriptionTest extends UnitTest {
         var expectedTransaction = Transaction.success("TRS-123");
 
         when(clock.instant()).thenReturn(InstantUtils.now());
-        when(subscriptionGateway.subscriptionOfId(any())).thenReturn(Optional.of(expectedSubscription));
+        when(subscriptionGateway.latestSubscriptionOfAccount(eq(expectedAccount.id()))).thenReturn(Optional.of(expectedSubscription));
         when(planGateway.planOfId(any())).thenReturn(Optional.of(expectedPlan));
         when(accountGateway.accountOfId(any())).thenReturn(Optional.of(expectedAccount));
         when(paymentGateway.processPayment(any())).thenReturn(expectedTransaction);
@@ -158,7 +158,7 @@ class DefaultChargeSubscriptionTest extends UnitTest {
         Assertions.assertEquals(expectedStatus, actualOutput.subscriptionStatus());
         Assertions.assertEquals(expectedTransaction, actualOutput.paymentTransaction());
 
-        verify(subscriptionGateway, times(1)).subscriptionOfId(eq(expectedSubscription.id()));
+        verify(subscriptionGateway, times(1)).latestSubscriptionOfAccount(eq(expectedAccount.id()));
         verify(planGateway, times(1)).planOfId(eq(expectedPlan.id()));
         verify(accountGateway, times(1)).accountOfId(eq(expectedAccount.id()));
         verify(subscriptionGateway, times(1)).save(any());
@@ -182,7 +182,7 @@ class DefaultChargeSubscriptionTest extends UnitTest {
         var expectedTransaction = Transaction.failure("TRS-123", "No funds");
 
         when(clock.instant()).thenReturn(InstantUtils.now());
-        when(subscriptionGateway.subscriptionOfId(any())).thenReturn(Optional.of(expectedSubscription));
+        when(subscriptionGateway.latestSubscriptionOfAccount(eq(expectedAccount.id()))).thenReturn(Optional.of(expectedSubscription));
         when(planGateway.planOfId(any())).thenReturn(Optional.of(expectedPlan));
         when(accountGateway.accountOfId(any())).thenReturn(Optional.of(expectedAccount));
         when(paymentGateway.processPayment(any())).thenReturn(expectedTransaction);
@@ -196,7 +196,7 @@ class DefaultChargeSubscriptionTest extends UnitTest {
         Assertions.assertEquals(expectedStatus, actualOutput.subscriptionStatus());
         Assertions.assertEquals(expectedTransaction, actualOutput.paymentTransaction());
 
-        verify(subscriptionGateway, times(1)).subscriptionOfId(eq(expectedSubscription.id()));
+        verify(subscriptionGateway, times(1)).latestSubscriptionOfAccount(eq(expectedAccount.id()));
         verify(planGateway, times(1)).planOfId(eq(expectedPlan.id()));
         verify(accountGateway, times(1)).accountOfId(eq(expectedAccount.id()));
         verify(subscriptionGateway, times(1)).save(any());
@@ -220,7 +220,7 @@ class DefaultChargeSubscriptionTest extends UnitTest {
         var expectedTransaction = Transaction.failure("TRS-123", "No funds");
 
         when(clock.instant()).thenReturn(InstantUtils.now());
-        when(subscriptionGateway.subscriptionOfId(any())).thenReturn(Optional.of(expectedSubscription));
+        when(subscriptionGateway.latestSubscriptionOfAccount(eq(expectedAccount.id()))).thenReturn(Optional.of(expectedSubscription));
         when(planGateway.planOfId(any())).thenReturn(Optional.of(expectedPlan));
         when(accountGateway.accountOfId(any())).thenReturn(Optional.of(expectedAccount));
         when(paymentGateway.processPayment(any())).thenReturn(expectedTransaction);
@@ -234,7 +234,7 @@ class DefaultChargeSubscriptionTest extends UnitTest {
         Assertions.assertEquals(expectedStatus, actualOutput.subscriptionStatus());
         Assertions.assertEquals(expectedTransaction, actualOutput.paymentTransaction());
 
-        verify(subscriptionGateway, times(1)).subscriptionOfId(eq(expectedSubscription.id()));
+        verify(subscriptionGateway, times(1)).latestSubscriptionOfAccount(eq(expectedAccount.id()));
         verify(planGateway, times(1)).planOfId(eq(expectedPlan.id()));
         verify(accountGateway, times(1)).accountOfId(eq(expectedAccount.id()));
         verify(subscriptionGateway, times(1)).save(any());
