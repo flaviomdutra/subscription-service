@@ -12,7 +12,7 @@ import org.springframework.test.jdbc.JdbcTestUtils;
 @Tag("integrationTest")
 public class AbstractRepositoryTest extends AbstractTest {
 
-    private static final String ACCOUNT = "accounts";
+    private static final String ACCOUNTS = "accounts";
 
     @Autowired
     private JdbcClient jdbcClient;
@@ -25,9 +25,9 @@ public class AbstractRepositoryTest extends AbstractTest {
     }
 
     protected int countAccounts() {
-        return JdbcTestUtils.countRowsInTable(jdbcClient, ACCOUNT);
+        return JdbcTestUtils.countRowsInTable(jdbcClient, ACCOUNTS);
     }
-    
+
 
     protected AccountJdbcRepository accountRepository() {
         return this.accountRepository;
