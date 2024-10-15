@@ -13,6 +13,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -22,9 +24,11 @@ import java.util.Optional;
 public class AccountJdbcRepository implements AccountGateway {
 
     private final JdbcClient jdbcClient;
+    private final EventJdbcRepository eventJdbcRepository;
 
-    public AccountJdbcRepository(final JdbcClient jdbcClient) {
+    public AccountJdbcRepository(final JdbcClient jdbcClient, final EventJdbcRepository eventJdbcRepository) {
         this.jdbcClient = Objects.requireNonNull(jdbcClient);
+        this.eventJdbcRepository = Objects.requireNonNull(eventJdbcRepository);
     }
 
     @Override
@@ -71,6 +75,7 @@ public class AccountJdbcRepository implements AccountGateway {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public Account save(Account anAccount) {
         if (anAccount.version() == 0) {
             create(anAccount);
@@ -78,6 +83,7 @@ public class AccountJdbcRepository implements AccountGateway {
             update(anAccount);
         }
 
+        this.eventJdbcRepository.saveAll(anAccount.domainEvents());
         return anAccount;
     }
 
