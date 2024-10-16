@@ -48,7 +48,6 @@ public class Plan extends AggregateRoot<PlanId> {
     ) {
         final var now = InstantUtils.now();
         final var isActive = anActive != null ? anActive : false;
-
         return new Plan(planId, 0, aName, aDescription, isActive, aPrice, now, now, isActive ? null : now);
     }
 
@@ -74,8 +73,8 @@ public class Plan extends AggregateRoot<PlanId> {
         for (var cmd : cmds) {
             switch (cmd) {
                 case PlanCommand.ActivatePlan c -> apply(c);
-                case PlanCommand.InactivatePlan c -> apply(c);
                 case PlanCommand.ChangePlan c -> apply(c);
+                case PlanCommand.InactivatePlan c -> apply(c);
             }
         }
 
@@ -88,11 +87,6 @@ public class Plan extends AggregateRoot<PlanId> {
         this.setActive(true);
     }
 
-    private void apply(final PlanCommand.InactivatePlan cmd) {
-        this.setDeletedAt(deletedAt != null ? deletedAt : InstantUtils.now());
-        this.setActive(false);
-    }
-
     private void apply(final PlanCommand.ChangePlan cmd) {
         this.setName(cmd.name());
         this.setDescription(cmd.description());
@@ -102,6 +96,11 @@ public class Plan extends AggregateRoot<PlanId> {
         } else {
             apply(new PlanCommand.InactivatePlan());
         }
+    }
+
+    private void apply(final PlanCommand.InactivatePlan cmd) {
+        this.setDeletedAt(deletedAt != null ? deletedAt : InstantUtils.now());
+        this.setActive(false);
     }
 
     public int version() {
@@ -124,16 +123,16 @@ public class Plan extends AggregateRoot<PlanId> {
         return price;
     }
 
-    public Instant createdAt() {
-        return createdAt;
+    public Instant deletedAt() {
+        return deletedAt;
     }
 
     public Instant updatedAt() {
         return updatedAt;
     }
 
-    public Instant deletedAt() {
-        return deletedAt;
+    public Instant createdAt() {
+        return createdAt;
     }
 
     private void setVersion(final int version) {
@@ -152,19 +151,18 @@ public class Plan extends AggregateRoot<PlanId> {
         this.description = description;
     }
 
-    private void setPrice(final Money price) {
-        this.assertArgumentNotNull(price, "'price' should not be null");
-        this.price = price;
-    }
-
     private void setActive(final Boolean active) {
         this.assertArgumentNotNull(active, "'active' should not be null");
         this.active = active;
     }
 
-    private void setCreatedAt(final Instant createdAt) {
-        this.assertArgumentNotNull(createdAt, "'createdAt' should not be null");
-        this.createdAt = createdAt;
+    private void setPrice(final Money price) {
+        this.assertArgumentNotNull(price, "'price' should not be null");
+        this.price = price;
+    }
+
+    private void setDeletedAt(final Instant deletedAt) {
+        this.deletedAt = deletedAt;
     }
 
     private void setUpdatedAt(final Instant updatedAt) {
@@ -172,7 +170,12 @@ public class Plan extends AggregateRoot<PlanId> {
         this.updatedAt = updatedAt;
     }
 
-    private void setDeletedAt(final Instant deletedAt) {
-        this.deletedAt = deletedAt;
+    private void setCreatedAt(final Instant createdAt) {
+        this.assertArgumentNotNull(createdAt, "'createdAt' should not be null");
+        this.createdAt = createdAt;
+    }
+
+    public Plan withId(final PlanId aPlanId) {
+        return Plan.with(aPlanId, version(), name(), description(), active(), price(), createdAt(), updatedAt(), deletedAt());
     }
 }

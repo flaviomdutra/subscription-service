@@ -9,25 +9,25 @@ import com.fullcycle.subscription.domain.person.Document;
 import com.fullcycle.subscription.domain.person.Email;
 import com.fullcycle.subscription.domain.person.Name;
 import com.fullcycle.subscription.domain.utils.IdUtils;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.JdbcClient;
+import com.fullcycle.subscription.infrastructure.jdbc.DatabaseClient;
+import com.fullcycle.subscription.infrastructure.jdbc.RowMap;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
 @Repository
 public class AccountJdbcRepository implements AccountGateway {
 
-    private final JdbcClient jdbcClient;
+    private final DatabaseClient database;
     private final EventJdbcRepository eventJdbcRepository;
 
-    public AccountJdbcRepository(final JdbcClient jdbcClient, final EventJdbcRepository eventJdbcRepository) {
-        this.jdbcClient = Objects.requireNonNull(jdbcClient);
+    public AccountJdbcRepository(final DatabaseClient databaseClient, final EventJdbcRepository eventJdbcRepository) {
+        this.database = Objects.requireNonNull(databaseClient);
         this.eventJdbcRepository = Objects.requireNonNull(eventJdbcRepository);
     }
 
@@ -37,46 +37,30 @@ public class AccountJdbcRepository implements AccountGateway {
     }
 
     @Override
-    public Optional<Account> accountOfId(AccountId anId) {
+    public Optional<Account> accountOfId(final AccountId anId) {
         final var sql = """
                 SELECT
                     id, version, idp_user_id, email, firstname, lastname, document_number, document_type, address_zip_code, address_number, address_complement, address_country
                 FROM accounts
                 WHERE id = :id
                 """;
-        return this.jdbcClient.sql(sql).param("id", anId.value()).query(accountMapper()).optional();
-    }
-
-    private RowMapper<Account> accountMapper() {
-        return (rs, rowNumber) -> {
-            final var zipCode = rs.getString("address_zip_code");
-            return Account.with(
-                    new AccountId(rs.getString("id")),
-                    rs.getInt("version"),
-                    new UserId(rs.getString("idp_user_id")),
-                    new Email(rs.getString("email")),
-                    new Name(rs.getString("firstname"), rs.getString("lastname")),
-                    Document.create(rs.getString("document_number"), rs.getString("document_type")),
-                    zipCode != null && !zipCode.isBlank() ?
-                            new Address(
-                                    zipCode,
-                                    rs.getString("address_number"),
-                                    rs.getString("address_complement"),
-                                    rs.getString("address_country")
-                            ) :
-                            null
-            );
-        };
+        return this.database.queryOne(sql, Map.of("id", anId.value()), accountMapper());
     }
 
     @Override
-    public Optional<Account> accountOfUserId(UserId userId) {
-        return Optional.empty();
+    public Optional<Account> accountOfUserId(final UserId userId) {
+        final var sql = """
+                SELECT
+                    id, version, idp_user_id, email, firstname, lastname, document_number, document_type, address_zip_code, address_number, address_complement, address_country
+                FROM accounts
+                WHERE idp_user_id = :userId
+                """;
+        return this.database.queryOne(sql, Map.of("userId", userId.value()), accountMapper());
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public Account save(Account anAccount) {
+    public Account save(final Account anAccount) {
         if (anAccount.version() == 0) {
             create(anAccount);
         } else {
@@ -110,7 +94,7 @@ public class AccountJdbcRepository implements AccountGateway {
                     address_number = :addressNumber,
                     address_complement = :addressComplement,
                     address_country = :addressCountry
-                WHERE id = :id  AND version = :version
+                WHERE id = :id and version = :version
                 """;
 
         if (executeUpdate(sql, account) == 0) {
@@ -120,7 +104,6 @@ public class AccountJdbcRepository implements AccountGateway {
 
     private int executeUpdate(final String sql, final Account account) {
         final var params = new HashMap<String, Object>();
-        params.put("id", account.id().value());
         params.put("version", account.version());
         params.put("userId", account.userId().value());
         params.put("email", account.email().value());
@@ -130,17 +113,34 @@ public class AccountJdbcRepository implements AccountGateway {
         params.put("documentType", account.document().type());
 
         final var address = account.billingAddress();
-
         params.put("addressZipCode", address != null ? address.zipcode() : "");
         params.put("addressNumber", address != null ? address.number() : "");
         params.put("addressComplement", address != null ? address.complement() : "");
         params.put("addressCountry", address != null ? address.country() : "");
+        params.put("id", account.id().value());
 
+        return this.database.update(sql, params);
+    }
 
-        try {
-            return this.jdbcClient.sql(sql).params(params).update();
-        } catch (DataIntegrityViolationException ex) {
-            throw ex;
-        }
+    private RowMap<Account> accountMapper() {
+        return (rs) -> {
+            final var zipCode = rs.getString("address_zip_code");
+            return Account.with(
+                    new AccountId(rs.getString("id")),
+                    rs.getInt("version"),
+                    new UserId(rs.getString("idp_user_id")),
+                    new Email(rs.getString("email")),
+                    new Name(rs.getString("firstname"), rs.getString("lastname")),
+                    Document.create(rs.getString("document_number"), rs.getString("document_type")),
+                    zipCode != null && !zipCode.isBlank() ?
+                            new Address(
+                                    zipCode,
+                                    rs.getString("address_number"),
+                                    rs.getString("address_complement"),
+                                    rs.getString("address_country")
+                            ) :
+                            null
+            );
+        };
     }
 }
