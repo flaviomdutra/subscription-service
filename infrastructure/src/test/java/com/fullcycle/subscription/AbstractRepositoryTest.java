@@ -3,6 +3,7 @@ package com.fullcycle.subscription;
 import com.fullcycle.subscription.infrastructure.gateway.repository.AccountJdbcRepository;
 import com.fullcycle.subscription.infrastructure.gateway.repository.EventJdbcRepository;
 import com.fullcycle.subscription.infrastructure.gateway.repository.PlanJdbcRepository;
+import com.fullcycle.subscription.infrastructure.gateway.repository.SubscriptionJdbcRepository;
 import com.fullcycle.subscription.infrastructure.jdbc.JdbcClientAdapter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -25,12 +26,14 @@ public class AbstractRepositoryTest extends AbstractTest {
     private AccountJdbcRepository accountRepository;
     private PlanJdbcRepository planRepository;
     private EventJdbcRepository eventRepository;
+    private SubscriptionJdbcRepository subscriptionRepository;
 
     @BeforeEach
     void setUp() {
         this.eventRepository = new EventJdbcRepository(new JdbcClientAdapter(jdbcClient));
         this.accountRepository = new AccountJdbcRepository(new JdbcClientAdapter(jdbcClient), eventRepository);
         this.planRepository = new PlanJdbcRepository(new JdbcClientAdapter(jdbcClient));
+        this.subscriptionRepository = new SubscriptionJdbcRepository(new JdbcClientAdapter(jdbcClient), eventRepository);
     }
 
     protected int countAccounts() {
@@ -55,5 +58,9 @@ public class AbstractRepositoryTest extends AbstractTest {
 
     protected PlanJdbcRepository planRepository() {
         return planRepository;
+    }
+
+    protected SubscriptionJdbcRepository subscriptionRepository() {
+        return subscriptionRepository;
     }
 }
