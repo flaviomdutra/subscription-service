@@ -5,9 +5,9 @@ import com.fullcycle.subscription.domain.utils.InstantUtils;
 import java.time.Instant;
 import java.time.LocalDate;
 
-record SubscriptionIncomplete(String subscriptionId, String accountId, Long planId, String reason,
-                              LocalDate dueDate,
-                              Instant occurredOn) implements SubscriptionEvent {
+public record SubscriptionIncomplete(String subscriptionId, String accountId, Long planId, String reason,
+                                     LocalDate dueDate,
+                                     Instant occurredOn) implements SubscriptionEvent {
 
     public SubscriptionIncomplete {
         this.assertArgumentNotEmpty(subscriptionId, "'subscriptionId' should not be empty");
