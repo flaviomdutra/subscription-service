@@ -4,6 +4,7 @@ import com.fullcycle.subscription.application.Presenter;
 import com.fullcycle.subscription.application.account.CreateAccount;
 import com.fullcycle.subscription.application.account.CreateIdpUser;
 import com.fullcycle.subscription.domain.UnitTest;
+import com.fullcycle.subscription.domain.account.AccountGateway;
 import com.fullcycle.subscription.domain.account.AccountId;
 import com.fullcycle.subscription.domain.account.idp.UserId;
 import com.fullcycle.subscription.domain.person.Document;
@@ -20,6 +21,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class SignUpMediatorTest extends UnitTest {
+    @Mock
+    private AccountGateway accountGateway;
+
     @Mock
     private CreateAccount createAccount;
 
@@ -46,12 +50,16 @@ class SignUpMediatorTest extends UnitTest {
 
         var req = new SignUpRequest(expectedDocumentNumber, expectedDocumentType, expectedPassword, expectedEmail, expectedLastname, expectedFirstname);
 
+        when(accountGateway.nextId()).thenReturn(expectedAccountId);
         when(createIdpUser.execute(any(), any())).thenAnswer(t -> {
             final Presenter<CreateIdpUser.Output, SignUpRequest> argument = t.getArgument(1);
             return argument.apply(() -> expectedUserId);
         });
 
-        when(createAccount.execute(any(), any())).thenReturn(new SignUpResponse(expectedAccountId.value()));
+        when(createAccount.execute(any(), any())).thenAnswer(t -> {
+            final Presenter<CreateAccount.Output, SignUpResponse> argument = t.getArgument(1);
+            return argument.apply(() -> expectedAccountId);
+        });
 
         // when
         var actualOutput = this.signUpMediator.signUp(req);
@@ -63,6 +71,7 @@ class SignUpMediatorTest extends UnitTest {
 
         var actualInput = createAccountInputCaptor.getValue();
         Assertions.assertEquals(expectedUserId.value(), actualInput.userId());
+        Assertions.assertEquals(expectedAccountId.value(), actualInput.accountId());
     }
 
 }
