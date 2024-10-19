@@ -103,20 +103,18 @@ public class SubscriptionJdbcRepository implements SubscriptionGateway {
     }
 
     private RowMap<Subscription> subscriptionMapper() {
-        return rs -> {
-            return Subscription.with(
-                    new SubscriptionId(rs.getString("id")),
-                    rs.getInt("version"),
-                    new AccountId(rs.getString("account_id")),
-                    new PlanId(rs.getLong("plan_id")),
-                    JdbcUtils.getLocalDate(rs, "due_date"),
-                    rs.getString("status"),
-                    JdbcUtils.getInstant(rs, "last_renew_dt"),
-                    rs.getString("last_transaction_id"),
-                    JdbcUtils.getInstant(rs, "created_at"),
-                    JdbcUtils.getInstant(rs, "updated_at")
-            );
-        };
+        return rs -> Subscription.with(
+                new SubscriptionId(rs.getString("id")),
+                rs.getInt("version"),
+                new AccountId(rs.getString("account_id")),
+                new PlanId(rs.getLong("plan_id")),
+                JdbcUtils.getLocalDate(rs, "due_date"),
+                rs.getString("status"),
+                JdbcUtils.getInstant(rs, "last_renew_dt"),
+                rs.getString("last_transaction_id"),
+                JdbcUtils.getInstant(rs, "created_at"),
+                JdbcUtils.getInstant(rs, "updated_at")
+        );
     }
 
 }
