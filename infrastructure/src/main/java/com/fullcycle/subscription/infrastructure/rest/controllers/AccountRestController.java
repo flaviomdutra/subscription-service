@@ -6,6 +6,7 @@ import com.fullcycle.subscription.infrastructure.mediator.SignUpMediator;
 import com.fullcycle.subscription.infrastructure.rest.AccountRestApi;
 import com.fullcycle.subscription.infrastructure.rest.models.req.BillingInfoRequest;
 import com.fullcycle.subscription.infrastructure.rest.models.req.SignUpRequest;
+import com.fullcycle.subscription.infrastructure.rest.models.res.BillingInfoResponse;
 import com.fullcycle.subscription.infrastructure.rest.models.res.SignUpResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,7 +33,7 @@ public class AccountRestController implements AccountRestApi {
     }
 
     @Override
-    public ResponseEntity<Void> updateBillingInfo(final CodeflixUser principal, final BillingInfoRequest req) {
+    public ResponseEntity<BillingInfoResponse> updateBillingInfo(final CodeflixUser principal, final BillingInfoRequest req) {
         record Input(
                 String accountId,
                 String zipcode,
@@ -42,9 +43,8 @@ public class AccountRestController implements AccountRestApi {
         ) implements UpdateBillingInfo.Input {
         }
 
-        this.updateBillingInfo.execute(new Input(principal.accountId(), req.zipcode(), req.number(), req.complement(), req.country()));
-//        return ResponseEntity.accepted().body();
-        return null;
+        final var out = this.updateBillingInfo.execute(new Input(principal.accountId(), req.zipcode(), req.number(), req.complement(), req.country()));
+        return ResponseEntity.accepted().body(new BillingInfoResponse(out.accountId().value()));
     }
 
 }

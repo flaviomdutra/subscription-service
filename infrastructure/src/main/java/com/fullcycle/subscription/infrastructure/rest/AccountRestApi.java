@@ -3,6 +3,7 @@ package com.fullcycle.subscription.infrastructure.rest;
 import com.fullcycle.subscription.infrastructure.authentication.principal.CodeflixUser;
 import com.fullcycle.subscription.infrastructure.rest.models.req.BillingInfoRequest;
 import com.fullcycle.subscription.infrastructure.rest.models.req.SignUpRequest;
+import com.fullcycle.subscription.infrastructure.rest.models.res.BillingInfoResponse;
 import com.fullcycle.subscription.infrastructure.rest.models.res.SignUpResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -45,5 +46,5 @@ public interface AccountRestApi {
             @ApiResponse(responseCode = "422", description = "A validation error was observed"),
             @ApiResponse(responseCode = "500", description = "An unpredictable error was observed")
     })
-    ResponseEntity<Void> updateBillingInfo(@AuthenticationPrincipal final CodeflixUser principal, @RequestBody @Valid BillingInfoRequest req);
+    ResponseEntity<BillingInfoResponse> updateBillingInfo(@AuthenticationPrincipal final CodeflixUser principal, @RequestBody @Valid BillingInfoRequest req);
 }

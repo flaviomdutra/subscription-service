@@ -7,9 +7,13 @@ public abstract class UpdateBillingInfo extends UseCase<UpdateBillingInfo.Input,
 
     public interface Input {
         String accountId();
+
         String zipcode();
+
         String number();
+
         String complement();
+
         String country();
     }
 
