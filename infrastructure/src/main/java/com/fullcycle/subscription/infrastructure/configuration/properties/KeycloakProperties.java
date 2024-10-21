@@ -35,7 +35,7 @@ public class KeycloakProperties {
         this.tokenUri = tokenUri;
     }
 
-    public String getAdminUsersUri() {
+    public String adminUsersUri() {
         return adminUsersUri;
     }
 
