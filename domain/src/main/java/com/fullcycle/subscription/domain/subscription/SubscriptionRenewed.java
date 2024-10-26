@@ -6,12 +6,12 @@ import com.fullcycle.subscription.domain.utils.InstantUtils;
 import java.time.Instant;
 import java.time.LocalDate;
 
-record SubscriptionRenewed(String subscriptionId, String accountId, Long planId, String transactionId,
-                           LocalDate dueDate,
-                           String currency,
-                           Double amount,
-                           Instant renewedAt,
-                           Instant occurredOn) implements SubscriptionEvent {
+public record SubscriptionRenewed(String subscriptionId, String accountId, Long planId, String transactionId,
+                                  LocalDate dueDate,
+                                  String currency,
+                                  Double amount,
+                                  Instant renewedAt,
+                                  Instant occurredOn) implements SubscriptionEvent {
 
     public SubscriptionRenewed {
         this.assertArgumentNotEmpty(subscriptionId, "'subscriptionId' should not be empty");

@@ -24,7 +24,7 @@ class KeycloakIdentityProviderClientTest extends AbstractRestClientTest {
     private GetClientCredentials getClientCredentials;
 
     @Autowired
-    private KeyCloakIdentityProviderClient client;
+    private KeycloakIdentityProviderClient client;
 
     @Test
     public void givenValidParams_whenCallsCreateUser_shouldReturnUserId() {

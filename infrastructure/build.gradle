@@ -6,6 +6,7 @@ buildscript {
         classpath 'org.flywaydb:flyway-mysql:9.11.0'
     }
 }
+
 plugins {
     id 'java-conventions'
     id 'jacoco-report-aggregation'
@@ -38,12 +39,12 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web") {
         exclude module: 'spring-boot-starter-tomcat'
     }
-
     implementation("org.springframework.boot:spring-boot-starter-undertow")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
+    implementation("org.springframework.kafka:spring-kafka")
 
     implementation("com.mysql:mysql-connector-j")
 
@@ -53,14 +54,15 @@ dependencies {
     testImplementation("org.flywaydb:flyway-core")
     testImplementation("org.flywaydb:flyway-mysql")
 
-
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.springframework.cloud:spring-cloud-contract-wiremock")
+    testImplementation("org.springframework.kafka:spring-kafka-test")
     testImplementation("org.springframework.security:spring-security-test")
 
     testImplementation("org.testcontainers:testcontainers:1.18.3")
     testImplementation("org.testcontainers:junit-jupiter:1.18.3")
+    testImplementation("org.testcontainers:kafka:1.18.3")
 }
 
 dependencyManagement {
@@ -70,9 +72,9 @@ dependencyManagement {
 }
 
 flyway {
-    url = System.getenv("FLYWAY_DB") ?: "jdbc:mysql://localhost:3306/adm_videos"
-    user = System.getenv("FLYWAY_USER") ?: "root"
-    password = System.getenv("FLYWAY_PASS") ?: "123456"
+    url = System.getenv('FLYWAY_DB') ?: 'jdbc:mysql://localhost:3306/adm_videos'
+    user = System.getenv('FLYWAY_USER') ?: 'root'
+    password = System.getenv('FLYWAY_PASS') ?: '123456'
 }
 
 testCodeCoverageReport {

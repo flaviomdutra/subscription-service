@@ -5,9 +5,9 @@ import com.fullcycle.subscription.domain.utils.InstantUtils;
 import java.time.Instant;
 import java.time.LocalDate;
 
-record SubscriptionCanceled(String subscriptionId, String accountId, Long planId,
-                            LocalDate dueDate,
-                            Instant occurredOn) implements SubscriptionEvent {
+public record SubscriptionCanceled(String subscriptionId, String accountId, Long planId,
+                                   LocalDate dueDate,
+                                   Instant occurredOn) implements SubscriptionEvent {
 
     public SubscriptionCanceled {
         this.assertArgumentNotEmpty(subscriptionId, "'subscriptionId' should not be empty");

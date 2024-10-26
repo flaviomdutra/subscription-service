@@ -16,20 +16,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClient;
 
 import java.net.URI;
 import java.util.*;
 
 @Component
-public class KeyCloakIdentityProviderClient implements IdentityProviderGateway {
+public class KeycloakIdentityProviderClient implements IdentityProviderGateway {
 
-    private static final Logger log = LoggerFactory.getLogger(KeyCloakIdentityProviderClient.class);
+    private static final Logger log = LoggerFactory.getLogger(KeycloakIdentityProviderClient.class);
+
     private final RestClient restClient;
     private final KeycloakProperties keycloakProperties;
     private final GetClientCredentials getClientCredentials;
 
-    public KeyCloakIdentityProviderClient(
+    public KeycloakIdentityProviderClient(
             @KeycloakAdmin final RestClient restClient,
             final KeycloakProperties keycloakProperties,
             final GetClientCredentials getClientCredentials
@@ -38,7 +40,6 @@ public class KeyCloakIdentityProviderClient implements IdentityProviderGateway {
         this.keycloakProperties = Objects.requireNonNull(keycloakProperties);
         this.getClientCredentials = Objects.requireNonNull(getClientCredentials);
     }
-
 
     @Override
     public UserId create(final User anUser) {
@@ -54,9 +55,11 @@ public class KeyCloakIdentityProviderClient implements IdentityProviderGateway {
         map.put("attributes", Map.of(
                 "account_id", account
         ));
-        map.put("credentials", List.of(
-                Map.of("type", "password", "value", anUser.password(), "temporary", Boolean.FALSE)
-        ));
+        map.put("credentials", List.of(Map.of(
+                "type", "password",
+                "value", anUser.password(),
+                "temporary", Boolean.FALSE
+        )));
 
         try {
             final var res = this.restClient.post()
@@ -73,19 +76,55 @@ public class KeyCloakIdentityProviderClient implements IdentityProviderGateway {
             }
 
             final var actualUserId = getUserId(res.getHeaders());
-
-            log.info("User created successfully on Keycloak [accountId:{}] [userId:{}]".formatted(account, actualUserId));
-
+            log.info("User created successfully on Keycloak [accountId:{}] [userId:{}]", account, actualUserId);
             return new UserId(actualUserId);
-
         } catch (HttpClientErrorException.Conflict ex) {
-            log.info("Conflict response observed from Keycloak [accountId:{}] [response:{}]".formatted(account, ex.getResponseBodyAsString()));
+            log.info("Conflict response observed from Keycloak [accountId:{}] [response:{}]", account, ex.getResponseBodyAsString());
             throw DomainException.with("Invalid username or password");
-        } catch (HttpClientErrorException ex) {
-            log.info("Error response observed from Keycloak [accountId:{}] [response:{}]".formatted(account, ex.getResponseBodyAsString()));
+        } catch (HttpStatusCodeException ex) {
+            log.info("Error response observed from Keycloak [accountId:{}] [response:{}]", account, ex.getResponseBodyAsString());
             throw InternalErrorException.with("Error response observed when trying create user");
         }
+    }
 
+    @Override
+    public void addUserToGroup(final UserId userId, final GroupId aGroupId) {
+        log.info("Adding user to group [userId:{}] [groupId:{}]", userId.value(), aGroupId.value());
+        try {
+            final var res = this.restClient.put()
+                    .uri(this.keycloakProperties.adminUsersUri() + "/{id}/groups/{groupId}", userId.value(), aGroupId.value())
+                    .header(HttpHeaders.AUTHORIZATION, "bearer " + getClientCredentials.retrieve())
+                    .retrieve()
+                    .toBodilessEntity();
+
+            if (!res.getStatusCode().is2xxSuccessful()) {
+                throw InternalErrorException.with("Unexpected Keycloak response [status:%s]".formatted(res.getStatusCode().value()));
+            }
+            log.info("User added to group [userId:{}] [groupId:{}]", userId.value(), aGroupId.value());
+        } catch (HttpStatusCodeException ex) {
+            log.info("Error response observed from Keycloak when trying add user to group [userId:{}] [response:{}]", userId.value(), ex.getResponseBodyAsString());
+            throw InternalErrorException.with("Error response observed when trying to add user to group");
+        }
+    }
+
+    @Override
+    public void removeUserFromGroup(final UserId userId, final GroupId aGroupId) {
+        log.info("Removing user from group [userId:{}] [groupId:{}]", userId.value(), aGroupId.value());
+        try {
+            final var res = this.restClient.delete()
+                    .uri(this.keycloakProperties.adminUsersUri() + "/{id}/groups/{groupId}", userId.value(), aGroupId.value())
+                    .header(HttpHeaders.AUTHORIZATION, "bearer " + getClientCredentials.retrieve())
+                    .retrieve()
+                    .toBodilessEntity();
+
+            if (!res.getStatusCode().is2xxSuccessful()) {
+                throw InternalErrorException.with("Unexpected Keycloak response [status:%s]".formatted(res.getStatusCode().value()));
+            }
+            log.info("User removed from group [userId:{}] [groupId:{}]", userId.value(), aGroupId.value());
+        } catch (HttpStatusCodeException ex) {
+            log.info("Error response observed from Keycloak when trying remove user from group [userId:{}] [response:{}]", userId.value(), ex.getResponseBodyAsString());
+            throw InternalErrorException.with("Error response observed when trying to remove user from group");
+        }
     }
 
     private String getUserId(final HttpHeaders headers) {
@@ -94,53 +133,5 @@ public class KeyCloakIdentityProviderClient implements IdentityProviderGateway {
                 .map(URI::getPath)
                 .map(it -> List.of(it.split("/")).getLast())
                 .orElse(null);
-    }
-
-    @Override
-    public void addUserToGroup(final UserId userId, final GroupId groupId) {
-        log.info("Adding user to group [userId:{}] [groupId:{}]", userId.value(), groupId.value());
-
-        try {
-            final var res = this.restClient.put()
-                    .uri(this.keycloakProperties.adminUsersUri() + "/{id}/groups/{groupId}", userId.value(), groupId.value())
-                    .header(HttpHeaders.AUTHORIZATION, "bearer " + getClientCredentials.retrieve())
-                    .retrieve()
-                    .toBodilessEntity();
-
-            if (!res.getStatusCode().is2xxSuccessful()) {
-                throw InternalErrorException.with("Unexpected Keycloak response [status:%s]".formatted(res.getStatusCode().value()));
-            }
-
-            final var actualUserId = getUserId(res.getHeaders());
-
-            log.info("User added to group [userId:{}] [groupId:{}]", userId.value(), groupId.value());
-        } catch (HttpClientErrorException ex) {
-            log.info("Error response observed from Keycloak when trying add user to group [userId:{}] [response:{}]", userId.value(), ex.getResponseBodyAsString());
-            throw InternalErrorException.with("Error response observed when trying to add user to group");
-        }
-    }
-
-    @Override
-    public void removeUserFromGroup(final UserId userId, final GroupId groupId) {
-        log.info("Removing user to group [userId:{}] [groupId:{}]", userId.value(), groupId.value());
-
-        try {
-            final var res = this.restClient.delete()
-                    .uri(this.keycloakProperties.adminUsersUri() + "/{id}/groups/{groupId}", userId.value(), groupId.value())
-                    .header(HttpHeaders.AUTHORIZATION, "bearer " + getClientCredentials.retrieve())
-                    .retrieve()
-                    .toBodilessEntity();
-
-            if (!res.getStatusCode().is2xxSuccessful()) {
-                throw InternalErrorException.with("Unexpected Keycloak response [status:%s]".formatted(res.getStatusCode().value()));
-            }
-
-            final var actualUserId = getUserId(res.getHeaders());
-
-            log.info("User removed to group [userId:{}] [groupId:{}]", userId.value(), groupId.value());
-        } catch (HttpClientErrorException ex) {
-            log.info("Error response observed from Keycloak when trying remove user from group [userId:{}] [response:{}]", userId.value(), ex.getResponseBodyAsString());
-            throw InternalErrorException.with("Error response observed when trying to remove user from group");
-        }
     }
 }
